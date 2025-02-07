@@ -31,7 +31,7 @@
     .result p {
       margin: 10px 0;
     }
-    /* Căn giữa nút Clear */
+    /* Căn giữa nút CLEAR */
     .button-container {
       text-align: center;
       margin-top: 10px;
@@ -47,6 +47,17 @@
     }
     button:hover {
       background-color: #0056b3;
+    }
+    /* Style cho phần thông tin thời gian */
+    .time-info {
+      margin-top: 30px;
+      font-size: 20px;
+      background-color: #e3f2fd;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .time-info p {
+      margin: 10px 0;
     }
   </style>
 </head>
@@ -66,19 +77,26 @@
   </div>
   
   <div class="button-container">
-    <button id="clearBtn">Clear</button>
+    <button id="clearBtn">CLEAR</button>
+  </div>
+  
+  <!-- Phần hiển thị thông tin thời gian -->
+  <div class="time-info">
+    <p><strong>THỨ MÁY:</strong> <span id="machineDay">...</span></p>
+    <p><strong>NGÀY MÁY:</strong> <span id="machineDate">...</span></p>
+    <p><strong>ÂM LỊCH NGÀY MÁY:</strong> <span id="lunarDate">...</span></p>
+    <p><strong>GIỜ VIỆT NAM:</strong> <span id="vietnamTime">...</span></p>
   </div>
 
   <script>
     // Hàm cập nhật số ký tự và số từ
     function updateCounts() {
       const text = document.getElementById("textInput").value;
-      
-      // Loại bỏ tất cả các ký tự khoảng trắng (bao gồm khoảng trắng, tab, xuống dòng) để đếm ký tự thực
+      // Loại bỏ khoảng trắng (bao gồm xuống dòng, tab, v.v.) để đếm ký tự thực
       const textWithoutSpaces = text.replace(/\s/g, "");
       const charCount = textWithoutSpaces.length;
       
-      // Đếm số từ: loại bỏ khoảng trắng ở đầu và cuối chuỗi, sau đó tách chuỗi theo khoảng trắng
+      // Tách từ dựa vào khoảng trắng (loại bỏ đầu và cuối chuỗi)
       const trimmedText = text.trim();
       let wordCount = 0;
       if (trimmedText !== "") {
@@ -89,14 +107,167 @@
       document.getElementById("wordCount").textContent = wordCount;
     }
     
-    // Cập nhật số đếm khi người dùng nhập liệu
     document.getElementById("textInput").addEventListener("input", updateCounts);
-    
-    // Sự kiện cho nút Clear
     document.getElementById("clearBtn").addEventListener("click", function() {
       document.getElementById("textInput").value = "";
       updateCounts();
     });
+    
+    /* ----- Phần chuyển đổi Dương lịch -> Âm lịch ----- */
+    var lunarInfo = [
+      0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
+      0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
+      0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,
+      0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,
+      0x0d4a0, 0x1d8a6, 0x0b550, 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557,
+      0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5b0, 0x14573, 0x052b0, 0x0a9a8, 0x0e950, 0x06aa0,
+      0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263, 0x0d950, 0x05b57, 0x056a0,
+      0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b5a0, 0x195a6,
+      0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570,
+      0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x05ac0, 0x0ab60, 0x096d5, 0x092e0,
+      0x0c960, 0x0d954, 0x0d4a0, 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5,
+      0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9, 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930,
+      0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0, 0x0d260, 0x0ea65, 0x0d530,
+      0x05aa0, 0x076a3, 0x096d0, 0x04bd7, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520, 0x0dd45,
+      0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0
+    ];
+
+    function jdFromDate(dd, mm, yy) {
+      var a = Math.floor((14 - mm) / 12);
+      var y = yy + 4800 - a;
+      var m = mm + 12 * a - 3;
+      var jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y 
+               + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+      if (jd < 2299161) {
+        jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y 
+             + Math.floor(y / 4) - 32083;
+      }
+      return jd;
+    }
+
+    function getNewMoonDay(k, timeZone) {
+      var T = k / 1236.85;
+      var T2 = T * T;
+      var T3 = T2 * T;
+      var dr = Math.PI / 180;
+      var Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 
+                - 0.000000155 * T3;
+      Jd1 = Jd1 + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+      return Math.floor(Jd1 + 0.5 + timeZone / 24);
+    }
+
+    function getSunLongitude(jdn, timeZone) {
+      var T = (jdn - 2451545.5 - timeZone / 24) / 36525;
+      var T2 = T * T;
+      var dr = Math.PI / 180;
+      var M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
+      var L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+      var DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M);
+      DL += (0.019993 - 0.000101 * T) * Math.sin(dr * 2 * M) + 0.000290 * Math.sin(dr * 3 * M);
+      var L = L0 + DL;
+      L = L * dr;
+      L = L - Math.PI * 2 * Math.floor(L / (Math.PI * 2));
+      return Math.floor(L / Math.PI * 6);
+    }
+
+    function getLunarMonth11(yy, timeZone) {
+      var off = jdFromDate(31, 12, yy) - 2415021;
+      var k = Math.floor(off / 29.530588853);
+      var nm = getNewMoonDay(k, timeZone);
+      var sunLong = getSunLongitude(nm, timeZone);
+      if (sunLong >= 9) {
+        nm = getNewMoonDay(k - 1, timeZone);
+      }
+      return nm;
+    }
+
+    function getLeapMonthOffset(a11, timeZone) {
+      var k = Math.floor((a11 - 2415021.076998695) / 29.530588853);
+      var i = 1;
+      var arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+      var last = arc;
+      do {
+        i++;
+        last = arc;
+        arc = getSunLongitude(getNewMoonDay(k + i, timeZone), timeZone);
+      } while (arc !== last && i < 14);
+      return i - 1;
+    }
+
+    function convertSolar2Lunar(dd, mm, yy, timeZone) {
+      var dayNumber = jdFromDate(dd, mm, yy);
+      var k = Math.floor((dayNumber - 2415021.076998695) / 29.530588853);
+      var monthStart = getNewMoonDay(k + 1, timeZone);
+      if (monthStart > dayNumber) {
+        monthStart = getNewMoonDay(k, timeZone);
+      }
+      var a11 = getLunarMonth11(yy, timeZone);
+      var b11 = a11;
+      var lunarYear;
+      if (a11 >= monthStart) {
+        lunarYear = yy;
+        a11 = getLunarMonth11(yy - 1, timeZone);
+      } else {
+        lunarYear = yy + 1;
+        b11 = getLunarMonth11(yy + 1, timeZone);
+      }
+      var lunarDay = dayNumber - monthStart + 1;
+      var diff = Math.floor((monthStart - a11) / 29);
+      var lunarMonth = diff + 11;
+      var lunarLeap = 0;
+      if (b11 - a11 > 365) {
+        var leapMonth = getLeapMonthOffset(a11, timeZone);
+        if (diff >= leapMonth) {
+          lunarMonth = diff + 10;
+          if (diff === leapMonth) {
+            lunarLeap = 1;
+          }
+        }
+      }
+      if (lunarMonth > 12) {
+        lunarMonth = lunarMonth - 12;
+      }
+      if (lunarMonth >= 11 && diff < 4) {
+        lunarYear -= 1;
+      }
+      return {
+        lunarDay: lunarDay,
+        lunarMonth: lunarMonth,
+        lunarYear: lunarYear,
+        lunarLeap: lunarLeap
+      };
+    }
+    
+    /* ----- Cập nhật thông tin thời gian và lịch ----- */
+    function updateTimeInfo() {
+      // Lấy thời gian theo giờ Việt Nam (múi giờ Asia/Ho_Chi_Minh)
+      var now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
+      
+      // THỨ MÁY
+      var dayOfWeek = now.getDay(); // 0: Chủ nhật, 1: Thứ hai, ...
+      var days = ["CHỦ NHẬT", "THỨ HAI", "THỨ BA", "THỨ TƯ", "THỨ NĂM", "THỨ SÁU", "THỨ BẢY"];
+      document.getElementById("machineDay").textContent = days[dayOfWeek];
+      
+      // NGÀY MÁY (định dạng dd/mm/yyyy)
+      var dd = now.getDate();
+      var mm = now.getMonth() + 1;
+      var yyyy = now.getFullYear();
+      var formattedDate = (dd < 10 ? "0" + dd : dd) + "/" + (mm < 10 ? "0" + mm : mm) + "/" + yyyy;
+      document.getElementById("machineDate").textContent = formattedDate;
+      
+      // GIỜ VIỆT NAM
+      var vietnamTime = now.toLocaleTimeString("vi-VN", { hour12: false });
+      document.getElementById("vietnamTime").textContent = vietnamTime;
+      
+      // ÂM LỊCH NGÀY MÁY (sử dụng hàm convertSolar2Lunar với timeZone = 7)
+      var lunar = convertSolar2Lunar(dd, mm, yyyy, 7);
+      var lunarStr = lunar.lunarDay + "/" + (lunar.lunarLeap ? "Nhuận " : "") 
+                     + lunar.lunarMonth + "/" + lunar.lunarYear;
+      document.getElementById("lunarDate").textContent = lunarStr;
+    }
+    
+    updateTimeInfo();             // Cập nhật ngay khi tải trang
+    setInterval(updateTimeInfo, 1000); // Cập nhật mỗi giây
   </script>
 </body>
 </html>
