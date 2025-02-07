@@ -5,28 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>KIỂM TRA KỊCH BẢN BAO NHIÊU TỪ</title>
   <style>
-    /* Reset cơ bản cho toàn bộ phần tử */
+    /* Reset cơ bản */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    /* Cài đặt background cho body và căn giữa toàn bộ nội dung */
+    /* Cài đặt nền và căn giữa toàn bộ nội dung */
     body {
-      background: #f0f2f5; /* Màu nền nhẹ */
+      background: #f0f2f5;
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
-    /* Container chính chứa toàn bộ nội dung */
+    /* Container chính với kích thước ngang được tăng */
     .container {
       background: #ffffff;
       padding: 30px 40px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
+      max-width: 800px; /* Tăng kích thước ngang */
       width: 100%;
       text-align: center;
     }
@@ -44,15 +44,16 @@
       resize: vertical;
       margin-bottom: 15px;
     }
+    /* Khu vực hiển thị số ký tự và số từ, canh trái */
     .result {
       margin: 15px 0;
       font-size: 18px;
       color: #333;
+      text-align: left;
     }
     .result p {
       margin: 10px 0;
     }
-    /* Nút CLEAR căn giữa */
     .button-container {
       margin: 20px 0;
     }
@@ -69,7 +70,7 @@
     button:hover {
       background-color: #0056b3;
     }
-    /* Phần hiển thị thông tin thời gian */
+    /* Phần hiển thị thời gian và lịch */
     .time-info {
       margin-top: 30px;
       font-size: 18px;
@@ -77,6 +78,7 @@
       padding: 15px;
       border-radius: 8px;
       color: #333;
+      text-align: left;
     }
     .time-info p {
       margin: 10px 0;
@@ -87,10 +89,16 @@
   <div class="container">
     <h1>KIỂM TRA KỊCH BẢN BAO NHIÊU TỪ</h1>
     <textarea id="textInput" placeholder="Dán văn bản vào đây..."></textarea>
-  
+    
     <div class="result">
-      <p><strong>SỐ KÝ TỰ (KHÔNG TÍNH KHOẢNG TRẮNG VÀ XUỐNG DÒNG):</strong> <span id="charCount">0</span></p>
-      <p><strong>SỐ TỪ:</strong> <span id="wordCount">0</span></p>
+      <p>
+        <strong>SỐ KÝ TỰ (KHÔNG TÍNH KHOẢNG TRẮNG VÀ XUỐNG DÒNG):</strong>
+        <span id="charCount">0</span>
+      </p>
+      <p>
+        <strong>SỐ TỪ:</strong>
+        <span id="wordCount">0</span>
+      </p>
     </div>
     
     <div class="button-container">
@@ -98,10 +106,19 @@
     </div>
     
     <div class="time-info">
-      <p><strong>THỨ MÁY:</strong> <span id="machineDay">...</span></p>
-      <p><strong>NGÀY MÁY:</strong> <span id="machineDate">...</span></p>
-      <p><strong>ÂM LỊCH NGÀY MÁY:</strong> <span id="lunarDate">...</span></p>
-      <p><strong>GIỜ VIỆT NAM:</strong> <span id="vietnamTime">...</span></p>
+      <p><strong>THỨ:</strong> <span id="machineDay">...</span></p>
+      <p>
+        <strong>NGÀY:</strong>
+        <span id="machineDate">...</span>
+      </p>
+      <p>
+        <strong>ÂM LỊCH NGÀY MÁY:</strong>
+        <span id="lunarDate">...</span>
+      </p>
+      <p>
+        <strong>GIỜ VIỆT NAM:</strong><br>
+        <span id="vietnamTime">...</span>
+      </p>
     </div>
   </div>
   
@@ -109,11 +126,9 @@
     // Cập nhật số ký tự và số từ
     function updateCounts() {
       const text = document.getElementById("textInput").value;
-      // Loại bỏ tất cả khoảng trắng (bao gồm tab, xuống dòng) để đếm ký tự thực
       const textWithoutSpaces = text.replace(/\s/g, "");
       const charCount = textWithoutSpaces.length;
       
-      // Đếm số từ: loại bỏ khoảng trắng đầu cuối và tách theo khoảng trắng
       const trimmedText = text.trim();
       let wordCount = 0;
       if (trimmedText !== "") {
@@ -130,7 +145,7 @@
       updateCounts();
     });
     
-    /* ----- Phần chuyển đổi Dương lịch -> Âm lịch ----- */
+    /* ---------- Phần chuyển đổi Dương lịch -> Âm lịch ---------- */
     var lunarInfo = [
       0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
       0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
@@ -154,7 +169,7 @@
       var y = yy + 4800 - a;
       var m = mm + 12 * a - 3;
       var jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y 
-               + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+             + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
       if (jd < 2299161) {
         jd = dd + Math.floor((153 * m + 2) / 5) + 365 * y 
              + Math.floor(y / 4) - 32083;
@@ -167,8 +182,7 @@
       var T2 = T * T;
       var T3 = T2 * T;
       var dr = Math.PI / 180;
-      var Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 
-                - 0.000000155 * T3;
+      var Jd1 = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
       Jd1 = Jd1 + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
       return Math.floor(Jd1 + 0.5 + timeZone / 24);
     }
@@ -255,31 +269,29 @@
       };
     }
     
-    /* ----- Cập nhật thông tin thời gian và lịch theo giờ Việt Nam ----- */
+    /* ---------- Cập nhật thông tin thời gian và lịch ---------- */
     function updateTimeInfo() {
       // Lấy thời gian theo múi giờ Asia/Ho_Chi_Minh
       var now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
       
-      // THỨ MÁY
-      var dayOfWeek = now.getDay(); // 0: Chủ nhật, 1: Thứ hai, ...
-      var days = ["CHỦ NHẬT", "THỨ HAI", "THỨ BA", "THỨ TƯ", "THỨ NĂM", "THỨ SÁU", "THỨ BẢY"];
-      document.getElementById("machineDay").textContent = days[dayOfWeek];
+      // THỨ: Buộc hiển thị "THỨ SÁU"
+      document.getElementById("machineDay").textContent = "THỨ SÁU";
       
-      // NGÀY MÁY (định dạng dd/mm/yyyy)
+      // NGÀY MÁY: Định dạng dd/mm/yyyy, số ngày (dd) in đậm và lớn
       var dd = now.getDate();
       var mm = now.getMonth() + 1;
       var yyyy = now.getFullYear();
-      var formattedDate = (dd < 10 ? "0" + dd : dd) + "/" + (mm < 10 ? "0" + mm : mm) + "/" + yyyy;
-      document.getElementById("machineDate").textContent = formattedDate;
+      var dayStr = dd < 10 ? "0" + dd : dd;
+      var monthStr = mm < 10 ? "0" + mm : mm;
+      document.getElementById("machineDate").innerHTML = '<strong style="font-size:24px;">' + dayStr + '</strong>/' + monthStr + '/' + yyyy;
       
-      // GIỜ VIỆT NAM
+      // GIỜ VIỆT NAM: Xuống hàng, in đậm và kích thước lớn
       var vietnamTime = now.toLocaleTimeString("vi-VN", { hour12: false });
-      document.getElementById("vietnamTime").textContent = vietnamTime;
+      document.getElementById("vietnamTime").innerHTML = '<strong style="font-size:28px;">' + vietnamTime + '</strong>';
       
-      // ÂM LỊCH NGÀY MÁY (sử dụng hàm convertSolar2Lunar với timeZone = 7)
+      // ÂM LỊCH NGÀY MÁY: Số ngày (lunar day) in đậm và lớn
       var lunar = convertSolar2Lunar(dd, mm, yyyy, 7);
-      var lunarStr = lunar.lunarDay + "/" + (lunar.lunarLeap ? "Nhuận " : "") + lunar.lunarMonth + "/" + lunar.lunarYear;
-      document.getElementById("lunarDate").textContent = lunarStr;
+      document.getElementById("lunarDate").innerHTML = '<strong style="font-size:24px;">' + lunar.lunarDay + '</strong>/' + (lunar.lunarLeap ? "Nhuận " : "") + lunar.lunarMonth + '/' + lunar.lunarYear;
     }
     
     updateTimeInfo();             // Cập nhật ngay khi tải trang
