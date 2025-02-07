@@ -92,7 +92,7 @@
     
     <div class="result">
       <p>
-        <strong>SỐ KÝ TỰ (KHÔNG TÍNH KHOẢNG TRẮNG VÀ XUỐNG DÒNG):</strong>
+        <strong>SỐ KÝ TỰ (<span style="text-transform: none;">không tính khoảng trắng và xuống dòng</span>):</strong>
         <span id="charCount">0</span>
       </p>
       <p>
@@ -107,24 +107,24 @@
     
     <div class="time-info">
       <p>
-        <span style="text-transform: lowercase;">thứ:</span>
+        <span style="text-transform: uppercase; font-weight: bold;">THỨ:</span>
         <span id="machineDay" style="text-transform: uppercase; font-weight: bold;">...</span>
       </p>
       <p>
-        <span style="text-transform: lowercase;">ngày:</span>
+        <span style="text-transform: uppercase; font-weight: bold;">NGÀY:</span>
         <span id="machineDate" style="text-transform: uppercase; font-weight: bold;">...</span>
       </p>
       <p>
-        <span style="text-transform: lowercase;">âm lịch ngày máy:</span>
+        <span style="text-transform: uppercase; font-weight: bold;">ÂM LỊCH NGÀY MÁY:</span>
         <span id="lunarDate" style="text-transform: uppercase; font-weight: bold;">...</span>
       </p>
       <p>
-        <span style="text-transform: lowercase;">giờ việt nam:</span><br>
-        <span id="vietnamTime" style="font-size:32px; font-weight: bold;">...</span>
+        <span style="text-transform: uppercase; font-weight: bold;">GIỜ VIỆT NAM:</span><br>
+        <span id="vietnamTime" style="font-size:32px; font-weight: bold; text-transform: uppercase;">...</span>
       </p>
       <p>
-        <span style="text-transform: lowercase;">giờ mỹ:</span><br>
-        <span id="usTime" style="font-size:32px; font-weight: bold;">...</span>
+        <span style="text-transform: uppercase; font-weight: bold;">GIỜ MỸ (NEW YORK):</span><br>
+        <span id="usTime" style="font-size:32px; font-weight: bold; text-transform: uppercase;">...</span>
       </p>
     </div>
   </div>
@@ -133,6 +133,7 @@
     // Cập nhật số ký tự và số từ
     function updateCounts() {
       const text = document.getElementById("textInput").value;
+      // Loại bỏ tất cả khoảng trắng (bao gồm tab, xuống dòng) để đếm ký tự thực
       const textWithoutSpaces = text.replace(/\s/g, "");
       const charCount = textWithoutSpaces.length;
       
@@ -281,10 +282,10 @@
       // Lấy thời gian theo múi giờ Asia/Ho_Chi_Minh
       var now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
       
-      // THỨ: Buộc hiển thị "THỨ SÁU"
+      // THỨ: Buộc hiển thị "THỨ SÁU" (in hoa)
       document.getElementById("machineDay").textContent = "THỨ SÁU";
       
-      // NGÀY MÁY: Định dạng dd/mm/yyyy, số ngày (dd) được in đậm và lớn
+      // NGÀY MÁY: Định dạng dd/mm/yyyy, số ngày được in đậm và lớn
       var dd = now.getDate();
       var mm = now.getMonth() + 1;
       var yyyy = now.getFullYear();
@@ -292,7 +293,7 @@
       var monthStr = mm < 10 ? "0" + mm : mm;
       document.getElementById("machineDate").innerHTML = '<strong style="font-size:24px;">' + dayStr + '</strong>/' + monthStr + '/' + yyyy;
       
-      // GIỜ VIỆT NAM: Xuống hàng, in đậm và kích thước lớn
+      // GIỜ VIỆT NAM: Xuống hàng, in đậm và kích thước lớn, hiển thị in hoa
       var vietnamTime = now.toLocaleTimeString("vi-VN", { hour12: false });
       document.getElementById("vietnamTime").innerHTML = '<strong style="font-size:32px;">' + vietnamTime + '</strong>';
       
@@ -300,7 +301,7 @@
       var lunar = convertSolar2Lunar(dd, mm, yyyy, 7);
       document.getElementById("lunarDate").innerHTML = '<strong style="font-size:24px;">' + lunar.lunarDay + '</strong>/' + (lunar.lunarLeap ? "NHUẬN " : "") + lunar.lunarMonth + '/' + lunar.lunarYear;
       
-      // GIỜ MỸ: Lấy giờ theo múi giờ America/New_York
+      // GIỜ MỸ: Lấy giờ theo múi giờ America/New_York và hiển thị kèm tên tiểu bang (NEW YORK)
       var usNow = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
       var usTime = usNow.toLocaleTimeString("en-US", { hour12: false });
       document.getElementById("usTime").innerHTML = '<strong style="font-size:32px;">' + usTime + '</strong>';
