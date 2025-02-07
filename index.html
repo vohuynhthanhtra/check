@@ -26,7 +26,7 @@
       padding: 40px 50px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      max-width: 1000px; /* tăng chiều ngang */
+      max-width: 1000px; /* Tăng chiều ngang */
       width: 100%;
       text-align: center;
     }
@@ -36,7 +36,7 @@
     }
     textarea {
       width: 100%;
-      height: 250px; /* tăng chiều cao ô textarea */
+      height: 250px; /* Tăng chiều cao ô textarea */
       font-size: 18px;
       padding: 15px;
       border: 1px solid #ddd;
@@ -112,11 +112,13 @@
       </p>
       <p>
         <span style="text-transform: uppercase; font-weight: bold;">NGÀY:</span>
-        <span id="machineDate" style="text-transform: uppercase; font-weight: bold;">...</span>
+        <!-- Hiển thị toàn bộ ngày dưới dạng dd/mm/yyyy với cùng kích thước và bold -->
+        <span id="machineDate" style="font-size:20px; font-weight: bold; text-transform: uppercase;">...</span>
       </p>
       <p>
         <span style="text-transform: uppercase; font-weight: bold;">ÂM LỊCH NGÀY MÁY:</span>
-        <span id="lunarDate" style="text-transform: uppercase; font-weight: bold;">...</span>
+        <!-- Hiển thị toàn bộ âm lịch ngày máy với cùng kích thước và bold -->
+        <span id="lunarDate" style="font-size:20px; font-weight: bold; text-transform: uppercase;">...</span>
       </p>
       <p>
         <span style="text-transform: uppercase; font-weight: bold;">GIỜ VIỆT NAM:</span><br>
@@ -130,10 +132,9 @@
   </div>
   
   <script>
-    // Cập nhật số ký tự và số từ
+    // Cập nhật số ký tự và số từ (không tính khoảng trắng và xuống dòng)
     function updateCounts() {
       const text = document.getElementById("textInput").value;
-      // Loại bỏ tất cả khoảng trắng (bao gồm tab, xuống dòng) để đếm ký tự thực
       const textWithoutSpaces = text.replace(/\s/g, "");
       const charCount = textWithoutSpaces.length;
       
@@ -285,26 +286,27 @@
       // THỨ: Buộc hiển thị "THỨ SÁU" (in hoa)
       document.getElementById("machineDay").textContent = "THỨ SÁU";
       
-      // NGÀY MÁY: Định dạng dd/mm/yyyy, số ngày được in đậm và lớn
+      // NGÀY MÁY: Hiển thị theo định dạng dd/mm/yyyy, toàn bộ chuỗi in hoa và bold (kích thước vừa phải)
       var dd = now.getDate();
       var mm = now.getMonth() + 1;
       var yyyy = now.getFullYear();
       var dayStr = dd < 10 ? "0" + dd : dd;
       var monthStr = mm < 10 ? "0" + mm : mm;
-      document.getElementById("machineDate").innerHTML = '<strong style="font-size:24px;">' + dayStr + '</strong>/' + monthStr + '/' + yyyy;
+      document.getElementById("machineDate").innerHTML = '<span style="font-size:20px; font-weight: bold; text-transform: uppercase;">' + dayStr + '/' + monthStr + '/' + yyyy + '</span>';
       
-      // GIỜ VIỆT NAM: Xuống hàng, in đậm và kích thước lớn, hiển thị in hoa
+      // GIỜ VIỆT NAM: Xuống hàng, in đậm, kích thước lớn, in hoa
       var vietnamTime = now.toLocaleTimeString("vi-VN", { hour12: false });
-      document.getElementById("vietnamTime").innerHTML = '<strong style="font-size:32px;">' + vietnamTime + '</strong>';
+      document.getElementById("vietnamTime").innerHTML = '<span style="font-size:32px; font-weight: bold; text-transform: uppercase;">' + vietnamTime + '</span>';
       
-      // ÂM LỊCH NGÀY MÁY: Số ngày (lunar day) được in đậm và lớn
+      // ÂM LỊCH NGÀY MÁY: Hiển thị theo định dạng (lunarDay/lunarMonth/lunarYear) in hoa, bold
       var lunar = convertSolar2Lunar(dd, mm, yyyy, 7);
-      document.getElementById("lunarDate").innerHTML = '<strong style="font-size:24px;">' + lunar.lunarDay + '</strong>/' + (lunar.lunarLeap ? "NHUẬN " : "") + lunar.lunarMonth + '/' + lunar.lunarYear;
+      document.getElementById("lunarDate").innerHTML = '<span style="font-size:20px; font-weight: bold; text-transform: uppercase;">' 
+        + lunar.lunarDay + '/' + (lunar.lunarLeap ? "NHUẬN " : "") + lunar.lunarMonth + '/' + lunar.lunarYear + '</span>';
       
-      // GIỜ MỸ: Lấy giờ theo múi giờ America/New_York và hiển thị kèm tên tiểu bang (NEW YORK)
+      // GIỜ MỸ: Lấy giờ theo múi giờ America/New_York và hiển thị (kèm tiểu bang NEW YORK) in hoa, bold, kích thước lớn
       var usNow = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
       var usTime = usNow.toLocaleTimeString("en-US", { hour12: false });
-      document.getElementById("usTime").innerHTML = '<strong style="font-size:32px;">' + usTime + '</strong>';
+      document.getElementById("usTime").innerHTML = '<span style="font-size:32px; font-weight: bold; text-transform: uppercase;">' + usTime + '</span>';
     }
     
     updateTimeInfo();             // Cập nhật ngay khi tải trang
