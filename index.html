@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đếm Ký Tự và Từ</title>
+  <title>KIỂM TRA KỊCH BẢN BAO NHIÊU TỪ</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -31,10 +31,14 @@
     .result p {
       margin: 10px 0;
     }
+    /* Căn giữa nút Clear */
+    .button-container {
+      text-align: center;
+      margin-top: 10px;
+    }
     button {
       padding: 10px 20px;
       font-size: 16px;
-      margin-top: 10px;
       cursor: pointer;
       border: none;
       border-radius: 4px;
@@ -47,15 +51,23 @@
   </style>
 </head>
 <body>
-  <h1>Đếm Ký Tự và Từ</h1>
+  <h1>KIỂM TRA KỊCH BẢN BAO NHIÊU TỪ</h1>
   <textarea id="textInput" placeholder="Dán văn bản vào đây..."></textarea>
   
   <div class="result">
-    <p><strong>Số ký tự</strong> (không tính khoảng trắng và xuống dòng): <span id="charCount">0</span></p>
-    <p><strong>Số từ</strong>: <span id="wordCount">0</span></p>
+    <p>
+      <strong>SỐ KÝ TỰ (KHÔNG TÍNH KHOẢNG TRẮNG VÀ XUỐNG DÒNG):</strong>
+      <span id="charCount">0</span>
+    </p>
+    <p>
+      <strong>SỐ TỪ:</strong>
+      <span id="wordCount">0</span>
+    </p>
   </div>
   
-  <button id="clearBtn">Clear</button>
+  <div class="button-container">
+    <button id="clearBtn">Clear</button>
+  </div>
 
   <script>
     // Hàm cập nhật số ký tự và số từ
@@ -77,7 +89,7 @@
       document.getElementById("wordCount").textContent = wordCount;
     }
     
-    // Sự kiện cập nhật số đếm khi người dùng nhập liệu
+    // Cập nhật số đếm khi người dùng nhập liệu
     document.getElementById("textInput").addEventListener("input", updateCounts);
     
     // Sự kiện cho nút Clear
