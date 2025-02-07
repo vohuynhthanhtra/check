@@ -20,13 +20,13 @@
       align-items: center;
       min-height: 100vh;
     }
-    /* Container chính với kích thước ngang được tăng */
+    /* Container chính với kích thước ngang và cao được tăng */
     .container {
       background: #ffffff;
-      padding: 30px 40px;
+      padding: 40px 50px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      max-width: 800px; /* Tăng kích thước ngang */
+      max-width: 1000px; /* tăng chiều ngang */
       width: 100%;
       text-align: center;
     }
@@ -36,9 +36,9 @@
     }
     textarea {
       width: 100%;
-      height: 150px;
-      font-size: 16px;
-      padding: 10px;
+      height: 250px; /* tăng chiều cao ô textarea */
+      font-size: 18px;
+      padding: 15px;
       border: 1px solid #ddd;
       border-radius: 5px;
       resize: vertical;
@@ -59,7 +59,7 @@
     }
     button {
       padding: 10px 20px;
-      font-size: 16px;
+      font-size: 18px;
       cursor: pointer;
       border: none;
       border-radius: 5px;
@@ -75,13 +75,13 @@
       margin-top: 30px;
       font-size: 18px;
       background: #e3f2fd;
-      padding: 15px;
+      padding: 20px;
       border-radius: 8px;
       color: #333;
       text-align: left;
     }
     .time-info p {
-      margin: 10px 0;
+      margin: 15px 0;
     }
   </style>
 </head>
@@ -106,18 +106,25 @@
     </div>
     
     <div class="time-info">
-      <p><strong>THỨ:</strong> <span id="machineDay">...</span></p>
       <p>
-        <strong>NGÀY:</strong>
-        <span id="machineDate">...</span>
+        <span style="text-transform: lowercase;">thứ:</span>
+        <span id="machineDay" style="text-transform: uppercase; font-weight: bold;">...</span>
       </p>
       <p>
-        <strong>ÂM LỊCH NGÀY MÁY:</strong>
-        <span id="lunarDate">...</span>
+        <span style="text-transform: lowercase;">ngày:</span>
+        <span id="machineDate" style="text-transform: uppercase; font-weight: bold;">...</span>
       </p>
       <p>
-        <strong>GIỜ VIỆT NAM:</strong><br>
-        <span id="vietnamTime">...</span>
+        <span style="text-transform: lowercase;">âm lịch ngày máy:</span>
+        <span id="lunarDate" style="text-transform: uppercase; font-weight: bold;">...</span>
+      </p>
+      <p>
+        <span style="text-transform: lowercase;">giờ việt nam:</span><br>
+        <span id="vietnamTime" style="font-size:32px; font-weight: bold;">...</span>
+      </p>
+      <p>
+        <span style="text-transform: lowercase;">giờ mỹ:</span><br>
+        <span id="usTime" style="font-size:32px; font-weight: bold;">...</span>
       </p>
     </div>
   </div>
@@ -277,7 +284,7 @@
       // THỨ: Buộc hiển thị "THỨ SÁU"
       document.getElementById("machineDay").textContent = "THỨ SÁU";
       
-      // NGÀY MÁY: Định dạng dd/mm/yyyy, số ngày (dd) in đậm và lớn
+      // NGÀY MÁY: Định dạng dd/mm/yyyy, số ngày (dd) được in đậm và lớn
       var dd = now.getDate();
       var mm = now.getMonth() + 1;
       var yyyy = now.getFullYear();
@@ -287,11 +294,16 @@
       
       // GIỜ VIỆT NAM: Xuống hàng, in đậm và kích thước lớn
       var vietnamTime = now.toLocaleTimeString("vi-VN", { hour12: false });
-      document.getElementById("vietnamTime").innerHTML = '<strong style="font-size:28px;">' + vietnamTime + '</strong>';
+      document.getElementById("vietnamTime").innerHTML = '<strong style="font-size:32px;">' + vietnamTime + '</strong>';
       
-      // ÂM LỊCH NGÀY MÁY: Số ngày (lunar day) in đậm và lớn
+      // ÂM LỊCH NGÀY MÁY: Số ngày (lunar day) được in đậm và lớn
       var lunar = convertSolar2Lunar(dd, mm, yyyy, 7);
-      document.getElementById("lunarDate").innerHTML = '<strong style="font-size:24px;">' + lunar.lunarDay + '</strong>/' + (lunar.lunarLeap ? "Nhuận " : "") + lunar.lunarMonth + '/' + lunar.lunarYear;
+      document.getElementById("lunarDate").innerHTML = '<strong style="font-size:24px;">' + lunar.lunarDay + '</strong>/' + (lunar.lunarLeap ? "NHUẬN " : "") + lunar.lunarMonth + '/' + lunar.lunarYear;
+      
+      // GIỜ MỸ: Lấy giờ theo múi giờ America/New_York
+      var usNow = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+      var usTime = usNow.toLocaleTimeString("en-US", { hour12: false });
+      document.getElementById("usTime").innerHTML = '<strong style="font-size:32px;">' + usTime + '</strong>';
     }
     
     updateTimeInfo();             // Cập nhật ngay khi tải trang
